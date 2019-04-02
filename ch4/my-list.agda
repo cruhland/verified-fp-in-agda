@@ -4,6 +4,9 @@ open import bool
 open import eq
 open import maybe
 open import nat
+open import nat-thms
+open import product
+open import product-thms
 
 data List (A : Set) : Set where
   Nil : List A
@@ -70,3 +73,21 @@ length-filter p Nil = z<=n
 length-filter p (x :: xs) with p x
 ... | tt = s<=s (length-filter p xs)
 ... | ff = <=s (length-filter p xs)
+
+filter-idem :
+  ∀ {A : Set} (p : A → bool) (xs : List A) →
+  filter p (filter p xs) ≡ filter p xs
+filter-idem p Nil = refl
+filter-idem p (x :: xs) with keep (p x)
+... | tt , p' rewrite p' | p' = cong (_::_ x) (filter-idem p xs)
+... | ff , p' rewrite p' = filter-idem p xs
+
+length-reverse-helper :
+  ∀ {A : Set} (xs rxs : List A) →
+  length (reverse-helper xs rxs) ≡ length xs + length rxs
+length-reverse-helper Nil rxs = refl
+length-reverse-helper (x :: xs) rxs
+  rewrite length-reverse-helper xs (x :: rxs) = +suc (length xs) (length rxs)
+
+length-reverse : ∀ {A : Set} (xs : List A) → length (reverse xs) ≡ length xs
+length-reverse xs rewrite length-reverse-helper xs Nil = +0 (length xs)
