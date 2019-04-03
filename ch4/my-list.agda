@@ -1,10 +1,12 @@
 module my-list where
 
 open import bool
+open import empty
 open import eq
 open import maybe
 open import nat
 open import nat-thms
+open import negation
 open import product
 open import product-thms
 
@@ -91,3 +93,9 @@ length-reverse-helper (x :: xs) rxs
 
 length-reverse : ∀ {A : Set} (xs : List A) → length (reverse xs) ≡ length xs
 length-reverse xs rewrite length-reverse-helper xs Nil = +0 (length xs)
+
+-- Exercises
+-- 4.1 (a)
+++-comm-false :
+  Σ Set (λ A → Σ (List A × List A) (λ { (xs , ys) → ¬ (xs ++ ys ≡ ys ++ xs) }))
+++-comm-false = bool , (tt :: Nil , ff :: Nil) , λ ()
