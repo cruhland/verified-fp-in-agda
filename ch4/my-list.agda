@@ -106,7 +106,7 @@ length-map-suc-never :
   ¬ (length (map f xs) ≡ suc (length xs))
 length-map-suc-never f Nil ()
 length-map-suc-never f (x :: xs) contra =
-  length-map-suc-never f xs ((suc-inj contra))
+  length-map-suc-never f xs (suc-inj contra)
 
 -- 4.1 (c)
 repeat : ∀ {A : Set} → nat → A → List A
