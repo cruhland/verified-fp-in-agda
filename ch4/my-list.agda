@@ -99,3 +99,64 @@ length-reverse xs rewrite length-reverse-helper xs Nil = +0 (length xs)
 ++-comm-false :
   Σ Set (λ A → Σ (List A × List A) (λ { (xs , ys) → ¬ (xs ++ ys ≡ ys ++ xs) }))
 ++-comm-false = bool , (tt :: Nil , ff :: Nil) , λ ()
+
+-- 4.1 (b)
+length-map-suc-never :
+  ∀ {A B : Set} (f : A → B) (xs : List A) →
+  ¬ (length (map f xs) ≡ suc (length xs))
+length-map-suc-never f Nil ()
+length-map-suc-never f (x :: xs) contra =
+  length-map-suc-never f xs ((suc-inj contra))
+
+-- 4.1 (c)
+repeat : ∀ {A : Set} → nat → A → List A
+repeat zero x = Nil
+repeat (suc n) x = x :: repeat n x
+
+filter-out-repeats :
+  ∀ {A : Set} {p : A → bool} {a : A} (n : nat) →
+  p a ≡ ff →
+  filter p (repeat n a) ≡ Nil
+filter-out-repeats zero pa≡ff = refl
+filter-out-repeats (suc n) pa≡ff rewrite pa≡ff = filter-out-repeats n pa≡ff
+
+-- 4.1 (d)
+is-empty : ∀ {A : Set} → List A → bool
+is-empty Nil = tt
+is-empty (_ :: _) = ff
+
+reverse-not-empty-never :
+  ∀ {A : Set} (xs : List A) → is-empty xs ≡ tt → ¬ (is-empty (reverse xs) ≡ ff)
+reverse-not-empty-never Nil exs≡tt = λ ()
+reverse-not-empty-never (x :: xs) ()
+
+-- 4.1 (e)
+filter-preserves-order :
+  ∀ {A : Set} (p : A → bool) (xs ys : List A) →
+  filter p (xs ++ ys) ≡ filter p xs ++ filter p ys
+filter-preserves-order p Nil ys = refl
+filter-preserves-order p (x :: xs) ys with p x
+... | tt = cong (_::_ x) (filter-preserves-order p xs ys)
+... | ff = filter-preserves-order p xs ys
+
+-- 4.2 (a)
+test-a-i : List nat
+test-a-i = Nil
+
+-- test-a-ii : List List
+-- test-a-ii = Nil
+
+test-a-iii : List bool
+test-a-iii = Nil
+
+test-a-iv : List (List bool)
+test-a-iv = Nil
+
+-- test-a-v : List Set
+-- test-a-v = Nil
+
+module _ where
+  open import list
+
+  test-a-v' : list Set
+  test-a-v' = []
