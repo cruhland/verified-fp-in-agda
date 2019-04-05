@@ -160,3 +160,66 @@ module _ where
 
   test-a-v' : list Set
   test-a-v' = []
+
+-- 4.2 (b)
+test-b-i : ∀ {A : Set} → List A → nat
+test-b-i Nil = 0
+test-b-i (x :: xs) = suc (test-b-i xs)
+
+-- test-b-ii : List A → nat
+-- test-b-ii Nil = 0
+-- test-b-ii (x :: xs) = suc (test-b-ii xs)
+
+test-b-iii : List bool → nat
+test-b-iii Nil = 0
+test-b-iii (x :: xs) = suc (test-b-iii xs)
+
+-- test-b-iv : ∀ {A : Set} → (xs : List A) → length xs
+-- test-b-iv Nil = 0
+-- test-b-iv (x :: xs) = suc (test-b-iv xs)
+
+-- 4.2 (c)
+test-c-i : ∀ {A B C : Set} → (A → B) → (B → C) → List A → List C
+test-c-i f g x = map g (map f x)
+
+test-c-ii : ∀ {A : Set} → (A → A) → (A → A) → List A → List A
+test-c-ii f g x = map g (map f x)
+
+-- test-c-iii : ∀ {A B C : Set} → (B → C) → (A → B) → List A → List C
+-- test-c-iii f g x = map g (map f x)
+
+-- test-c-iv : ∀ {A B C : Set} → (A → B → C) → List A → List (B → C)
+-- test-c-iv f g x = map g (map f x)
+
+-- test-c-v : ∀ {B : Set} {A : List B} → (A → B) → (B → B) → List A → List B
+-- test-c-v f g x = map g (map f x)
+
+-- 4.3
+takeWhile : ∀ {A : Set} → (A → bool) → List A → List A
+takeWhile p Nil = Nil
+takeWhile p (x :: xs) = if p x then x :: takeWhile p xs else Nil
+
+-- 4.4
+takeWhileRepeat :
+  ∀ {A : Set} (p : A → bool) (n : nat) (a : A) →
+  p a ≡ tt →
+  takeWhile p (repeat n a) ≡ repeat n a
+takeWhileRepeat p zero a pa≡tt = refl
+takeWhileRepeat p (suc n) a pa≡tt rewrite pa≡tt =
+  cong (_::_ a) (takeWhileRepeat p n a pa≡tt)
+
+-- 4.5
+take : ∀ {A : Set} (n : nat) (xs : List A) → List A
+take (suc n) (x :: xs) = x :: take n xs
+take _ _ = Nil
+
+-- 4.6
+drop : ∀ {A : Set} (n : nat) (xs : List A) → List A
+drop zero xs = xs
+drop (suc n) Nil = Nil
+drop (suc n) (_ :: xs) = drop n xs
+
+take++drop : ∀ {A : Set} (n : nat) (xs : List A) → take n xs ++ drop n xs ≡ xs
+take++drop zero xs = refl
+take++drop (suc n) Nil = refl
+take++drop (suc n) (x :: xs) = cong (_::_ x) (take++drop n xs)
